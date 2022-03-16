@@ -9,3 +9,73 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+
+model User {
+  id          String    @id @default(uuid())
+  name        String
+  email       String @unique
+  password    String
+  
+  UserSubscriptionPlan UserSubscriptionPlan[]
+  Payment Payment[]
+  PaymentMethod PaymentMethod[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SubscriptionPlan {
+  id          String    @id @default(uuid())
+  name        String
+  description String
+  duration   Int
+  durationUnit String
+  isActive    Boolean
+  price       Int
+  currency    String
+  UserSubscriptionPlan UserSubscriptionPlan[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model UserSubscriptionPlan {
+  id          String    @id @default(uuid())
+  userId      String
+  user       User @relation(fields: [userId], references: [id])
+  planId      String
+  isActive  Boolean
+  endDate     DateTime
+  subscriptionPlan SubscriptionPlan @relation(fields: [planId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Payment {
+  id          String    @id @default(uuid())
+  userId      String
+  user       User @relation(fields: [userId], references: [id])
+  planId      String
+  amount      Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model PaymentMethod {
+  id          String    @id @default(uuid())
+  userId      String
+   user       User @relation(fields: [userId], references: [id])
+  cardNumber  String
+  cardHolder  String
+  cardExpiry  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Coupon {
+  id          String    @id @default(uuid())
+  code        String
+  discount    Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+

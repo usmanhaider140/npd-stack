@@ -1,26 +1,40 @@
+import { PrismaService } from './../prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { encodePassword } from 'src/utils/encode-password';
 
 @Injectable()
 export class UserService {
+  constructor(private prismaService: PrismaService) {}
   create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+    const hashPassword = encodePassword(createUserDto.password);
+    return this.prismaService.user.create({
+      data: { ...createUserDto, password: hashPassword },
+    });
   }
 
   findAll() {
-    return `This action returns all user`;
+    return this.prismaService.user.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  findOne(id: string) {
+    return this.prismaService.user.findFirst({ where: { id } });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  findOneByEmail(email: string) {
+    console.log('findOneByEmail', email);
+    return this.prismaService.user.findFirst({ where: { email } });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  update(id: string, updateUserDto: UpdateUserDto) {
+    return this.prismaService.user.update({
+      where: { id },
+      data: updateUserDto,
+    });
+  }
+
+  remove(id: string) {
+    return this.prismaService.user.delete({ where: { id } });
   }
 }

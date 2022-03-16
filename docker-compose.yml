@@ -1,6 +1,18 @@
 version: '3.8'
 
 services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    container_name: postgres-db
+    ports:
+      - 5432:5432
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
   dev:
     container_name: npd-stack-dev
     image: nestjs-api-dev:1.0.0
@@ -27,7 +39,7 @@ services:
       dockerfile: ./Dockerfile
     command: npm run start:prod
     ports:
-      - 3000:3000
+      - 3001:3001
       - 9229:9229
     networks:
       - nesjs-network
