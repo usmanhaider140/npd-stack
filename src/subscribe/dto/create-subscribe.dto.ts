@@ -1,15 +1,24 @@
-import { IsString, IsNotEmpty, IsBoolean, IsDate } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsBoolean,
+  IsDate,
+  IsDateString,
+} from 'class-validator';
 export class CreateSubscribeDto {
   @IsString()
   @IsNotEmpty()
   userId: string;
+
   @IsString()
   @IsNotEmpty()
   planId: string;
+
   @IsBoolean()
   @IsNotEmpty()
   isActive: boolean;
-  @IsDate()
+
+  @IsDateString()
   @IsNotEmpty()
-  endDate: Date;
+  endDate: string;
 }
